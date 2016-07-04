@@ -1,0 +1,168 @@
+﻿@model MVCFormSite.Models.User
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>RegisterRazor</title>
+    <style type="text/css">
+        .main-field {
+            height: 600px;
+            background-color: #d0cccc;
+        }
+
+        .legend-field {
+            text-align: center;
+            font-size: xx-large;
+            font-family: 'Mesquite Std';
+            font: bold;
+        }
+
+        .editor-label {
+            text-align: center;
+            font-family: 'Microsoft MHei';
+            font: bold;
+            color: darkblue;
+        }
+
+        .editor-field {
+            text-align: center;
+        }
+
+        .field-validation-error {
+            color: red;
+            text-align: center;
+        }
+
+        .redirect-field {
+            text-align: center;
+            text-decoration: none;
+            color: blue;
+        }
+
+        .errorinfo {
+            color: red;
+            text-align: center;
+        }
+
+        .redalert {
+            border-style: solid;
+            border-color: red;
+        }
+    </style>
+</head>
+<body>
+    <script src="~/Scripts/jquery-1.8.2.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#resetbtn").click(function () {
+                $(this).closest('form').find("input, textarea").val("");
+                window.location = window.location.href.split("?")[0];
+            });
+
+            $("#rptpassword").blur(function () {
+                if ($("#rptpassword").val() != $("#password").val()) {
+                    if ($("#password_not_match") != null) {
+                        $("#password_not_match").remove();
+                    }
+                    var errormessage = document.createElement("p");
+                    errormessage.setAttribute("class", "errorinfo");
+                    errormessage.setAttribute("id", "password_not_match");
+                    errormessage.textContent = "Password not match!";
+                    $("#rptpasswordfield").append(errormessage);
+                } else {
+                    if ($("#password_not_match") != null) {
+                        $("#password_not_match").remove();
+                    }
+                }
+            });
+        });
+    </script>
+
+
+
+    @using (Html.BeginForm("ValidateRazor", "UserInfo"))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <fieldset class="main-field">
+            <legend class="legend-field">Register Infomation</legend>
+
+            <div class="editor-label">
+                @Html.LabelFor(model => model.username)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.username)
+                <br />
+                @Html.ValidationMessageFor(model => model.username)
+            </div>
+
+            <br />
+            <div class="editor-label">
+                @Html.LabelFor(model => model.password)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.password)
+                <br />
+                @Html.ValidationMessageFor(model => model.password)
+            </div>
+
+            <br />
+            <div class="editor-label">Repeat your password</div>
+            <div class="editor-field" id="rptpasswordfield">
+                @Html.TextBox("rptpassword", null)
+            </div>
+
+            <br />
+            <div class="editor-label">
+                @Html.LabelFor(model => model.email)
+            </div>
+            <div class="editor-field">
+                @Html.EditorFor(model => model.email)
+                <br />
+                @Html.ValidationMessageFor(model => model.email)
+            </div>
+
+            <br />
+            <div class="editor-label">
+                @Html.LabelFor(model => model.age)
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("age", null)
+                <br />
+                @Html.ValidationMessageFor(model => model.age)
+            </div>
+
+            <br />
+            <p style="text-align:center;">
+                <input type="submit" value="Register" />
+                <input type="button" value="Reset" id="resetbtn" />
+            </p>
+            <br />
+            @if (Request.QueryString["registererror"] != null)
+            {
+                <script>
+                    $("input[type=text]").addClass("redalert");
+                </script>
+                <p class="errorinfo">
+                    @Request.QueryString["registererror"].ToString()
+                </p>
+            }
+            <div class="redirect-field">
+                @Html.ActionLink("Back to Login", "Index", "Login", null, new { @class = "redirect-field" })
+            </div>
+
+        </fieldset>
+    }
+
+
+</body>
+</html>
